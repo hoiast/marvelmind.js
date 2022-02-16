@@ -1,0 +1,29 @@
+{
+  "name": "marvelmind.js",
+  "version": "1.0.0",
+  "description": "Node.js API for Marvelmind GPS USB data stream",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoiast/Marvelmind.js.git"
+  },
+  "keywords": [
+    "GPS",
+    "Marvelmind",
+    "javascript",
+    "Node.js"
+  ],
+  "author": "Murilo Hoias Teixeira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoiast/Marvelmind.js/issues"
+  },
+  "homepage": "https://github.com/hoiast/Marvelmind.js#readme",
+  "dependencies": {
+    "bufferpack": "^0.0.6",
+    "serialport": "^10.3.0"
+  }
+}
