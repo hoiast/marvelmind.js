@@ -4,9 +4,13 @@
 
 Marlvelmind.js includes two small Javascript classes for receiving and parsing data from Marvelmind mobile beacon by USB/serial port.
 
-This code is divided in two sections - a **CLIENT** utility class and a **SERVER** utility class. Both classes parse data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00) and apply a similar approach to parse incoming data, but differ significantly on how data is received.
+This code is divided in two sections - a **CLIENT** utility class and a **SERVER** utility class. Both classes parse data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00) and apply a similar approach to read incoming data, but differ significantly on how data is received and parsed.
 
-The client library is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). The server version of this code uses a serial port library, [serialport](https://www.npmjs.com/package/serialport), to acquire data stream.
+The client library is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). A custom parser is implemented.
+
+The server version of this code uses a serial port library, [serialport](https://www.npmjs.com/package/serialport), to acquire data stream and parse it with [parser-delimiter](https://serialport.io/docs/api-parser-delimiter).
+
+Events are emitted using [EventEmitter](https://github.com/Olical/EventEmitter) and [native Node.js Events API](https://nodejs.org/api/events.html) for client and server versions, respectively.
 
 ## How to Test
 
@@ -18,7 +22,7 @@ Please, ensure that all deploying instructions by Marvelmind have been thoroughl
 
 ### Client version
 
-> - Open _/client/test/index.html_
+> - Open _/client/test.html_
 > - Click on **Connect GPS Modem**
 > - Select the Marvelmind Modem.
 > - Incoming data will be logged on console. Enjoy!
@@ -40,13 +44,51 @@ Please, ensure that all deploying instructions by Marvelmind have been thoroughl
 >
 > - Incoming data will be logged on console. Enjoy!
 
-## How to Uuse
+## How to Use
+
+#### Events:
+
+Both versions emit Events to transfer incoming data. Here follows a comprehensive list:
+
+|   Event String    | Content                                         | Marvelmind Code |
+| :---------------: | ----------------------------------------------- | :-------------: |
+|   rawDistances    | Beacon Distances (mm)                           |   0x0004 (4)    |
+|     telemetry     | Battery (mV) and RSSI (Dbm)                     |   0x0006 (6)    |
+|      quality      | Quality Parameter (%) and Geofencing Zone Index |   0x0007 (7)    |
+| hedgehogMilimeter | Hedgehog Coordinates (mm)                       |   0x0011 (17)   |
+| beaconsMilimeter  | Beacons Coordinates (mm)                        |   0x0012 (18)   |
 
 ### Client version
+
+```
+    <script src="assets/js/bufferpack.js"></script>
+    <script src="assets/js/EventEmitter.js"></script>
+    <script src="marvelmind.js"></script>
+    <script>
+        let marvelmind = new Marvelmind()
+        marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
+            console.log(hedgehogAddress, hedgehogCoordinates);
+        });
+    </script>
+
+```
+
+#### Attributes:
+
+> **baudRate** - baudrate. Should be match to baudrate of hedgehog-beacon
+> _Default value: 9600_
+>
+> **debug** - debug flag which activate console output
+> _Default value: False_
+
+#### Methods:
+
+> **toggleConnection** - Toggle serial port connection. **Note:** Modern browser policy requires that users interact with the site before allowing WebUSB connection. For example, on _/client/test.html_, a click event is used to ensure user interaction.
 
 ### Server version
 
 ```
+const { Marvelmind } = require('./marvelmind');
 const marvelmind = new Marvelmind();
 marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
   console.log(hedgehogAddress, hedgehogCoordinates);
@@ -74,14 +116,6 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 #### Methods:
 
 > **toggleReading** - Toggle data parsing.
-
-#### Events:
-
-> **beaconsMilimeter** - Beacon Distances (mm) - code: 0x0004
-> **telemetry** - Battery (mV) and RSSI (Dbm) - code: 0x0006
-> **quality** - Quality Parameter (%) - code: 0x0007
-> **rawDistances** - Hedgehog Coordinates (mm) - code: 0x0011
-> **hedgehogMilimeter** - Beacons Coordinates (mm) - code: 0x0012
 
 ## _Credits_
 

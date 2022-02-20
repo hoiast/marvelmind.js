@@ -6,10 +6,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marvelmind Testing</title>
-    <script src="/marvelmind.js"></script>
+    <script src="assets/js/bufferpack.js"></script>
+    <script src="assets/js/EventEmitter.js"></script>
+    <script src="marvelmind.js"></script>
 </head>
 
 <body>
+
+    <button id="connectionButton" style="background-color: #94d194;">Connect GPS Modem</button>
+
+    <script>
+
+        let marvelmind = new Marvelmind()
+
+        // marvelmind.on('rawDistances', (hedgehogAddress, beaconsDistances) => {
+        //     console.log('rawDistances', hedgehogAddress, beaconsDistances);
+        // });
+        marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
+            console.log('hedgehogMilimeter', hedgehogAddress, hedgehogCoordinates);
+        });
+        // marvelmind.on('beaconsMilimeter', (beaconsCoordinates) => {
+        //     console.log('beaconsMilimeter', beaconsCoordinates);
+        // });
+        // marvelmind.on('quality', (hedgehogAddress, qualityData) => {
+        //     console.log('quality', hedgehogAddress, qualityData);
+        // });
+        // marvelmind.on('telemetry', (deviceAddress, telemetryData) => {
+        //     console.log('telemetry', deviceAddress, telemetryData);
+        // });
+
+        let button = document.getElementById('connectionButton')
+        button.addEventListener('click', () => {
+            marvelmind.toggleConnection();
+        })
+
+        marvelmind.on('connected', () => {
+            let button = document.getElementById('connectionButton')
+            button.firstChild.data = 'Disconnect GPS Modem'
+            button.style.backgroundColor = '#f3b2b2'
+        })
+        marvelmind.on('disconnected', () => {
+            let button = document.getElementById('connectionButton')
+            button.firstChild.data = 'Connect GPS Modem'
+            button.style.backgroundColor = '#94d194'
+        })
+
+    </script>
 
 </body>
 

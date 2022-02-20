@@ -24,7 +24,7 @@ class Marvelmind extends EventEmitter {
     this.data = {
       hedgehogMilimeter: { name: 'Hedgehog Coordinates (mm)', data: {} }, //hedgehogAddress: { x: int, y: int, z: int}
       beaconsMilimeter: { name: 'Beacons Coordinates (mm)', data: {} }, //deviceAddress: { x: int, y: int, z: int}
-      rawDistances: { name: 'Beacon Distances (mm)', data: {} }, // hedgehogAddress: { beacondAddress: {distance: int}
+      rawDistances: { name: 'Beacon Distances (mm)', data: {} }, // hedgehogAddress: { beacondAddress: {distance: int, isDistanceApplicable: bool}
       quality: { name: 'Quality Parameter (%)', data: {} }, //hedgehogAddress: {quality: int, geofencingZoneIndex: int}
       telemetry: { name: 'Battery (mV) and RSSI (Dbm)', data: {} }, //deviceAddress: { battery: int, RSSI: int}
     };
@@ -45,7 +45,7 @@ class Marvelmind extends EventEmitter {
   init() {
     this.connectSerialPort();
     this.initParser();
-    this.initReading();
+    if (!this.paused) this.initReading();
   }
 
   debugger(property) {
@@ -81,27 +81,24 @@ class Marvelmind extends EventEmitter {
     let code = buffer.readUInt16LE();
     let initialOffset = 2;
 
-    // . New data packet has arrived.
-    this.marvelmind.emit('data', code);
-
     switch (code) {
-      // Beacon Distances (mm) from Hedgehog (Packet of raw distances data)
+      // . Beacon Distances (mm) from Hedgehog (Packet of raw distances data)
       case 4: // code: 0x0004(uint_16)
         this.marvelmind.readRawDistances(buffer, initialOffset);
         break;
-      // Battery (mV) and Received Signal Strength Indication - RSSI (Dbm) (Packet with telemetry data)
+      // . Battery (mV) and Received Signal Strength Indication - RSSI (Dbm) (Packet with telemetry data)
       case 6: // code: 0x0006(uint_16)
         this.marvelmind.readTelemetryData(buffer, initialOffset);
         break;
-      // Quality Parameter (%) (Packet of positioning quality)
+      // . Quality Parameter (%) (Packet of positioning quality)
       case 7: // code: 0x0007(uint_16)
         this.marvelmind.readQualityData(buffer, initialOffset);
         break;
-      // Hedgehog Coordinates (mm) (Packet of hedgehog coordinates)
+      // . Hedgehog Coordinates (mm) (Packet of hedgehog coordinates)
       case 17: //  code: 0x0011(uint_16)
         this.marvelmind.readHedgehogMilimeter(buffer, initialOffset);
         break;
-      // Beacons Coordinates (mm) (Zone mapping update?) (Packet of all beacons coordinates)
+      // . Beacons Coordinates (mm) (Zone mapping update?) (Packet of all beacons coordinates)
       case 18: // code: 0x0012(uint_16)
         this.marvelmind.readBeaconsMilimiter(buffer, initialOffset);
         break;
@@ -161,11 +158,13 @@ class Marvelmind extends EventEmitter {
     // . Store Beacon Data
     this.data.beaconsMilimeter.data = {};
     for (var i = 0; i < 4; i++) {
-      this.data.beaconsMilimeter.data[beaconsCoordinates[i].beaconAddress] = {
-        x: beaconsCoordinates[i].x,
-        y: beaconsCoordinates[i].y,
-        z: beaconsCoordinates[i].z,
-      };
+      if (beaconsCoordinates[i] !== undefined) {
+        this.data.beaconsMilimeter.data[beaconsCoordinates[i].beaconAddress] = {
+          x: beaconsCoordinates[i].x,
+          y: beaconsCoordinates[i].y,
+          z: beaconsCoordinates[i].z,
+        };
+      }
     }
 
     // . New beacon coordinates data packet has arrived.
@@ -174,7 +173,6 @@ class Marvelmind extends EventEmitter {
     this.debugger('beaconsMilimeter');
   }
 
-  // let data = bufferpack.unpack('<BB     BLB BLB BLB BLB LH', buffer, offset);
   readRawDistances(buffer, offset) {
     // . Packet Data Unpacking
     let headerData = bufferpack.unpack('<BB', buffer, offset);
