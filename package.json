@@ -1,10 +1,10 @@
 {
   "name": "marvelmind.js",
-  "version": "1.0.0",
-  "description": "Node.js API for Marvelmind GPS USB data stream",
-  "main": "app.js",
+  "version": "0.0.1",
+  "description": "Node.js and Client API for Marvelmind GPS USB data stream",
+  "main": "",
   "scripts": {
-    "test": "node app"
+    "jsdocs": "jsdocs $npm_config_type/"
   },
   "repository": {
     "type": "git",
