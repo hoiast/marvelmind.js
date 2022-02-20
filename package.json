@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "description": "Node.js and Client API for Marvelmind GPS USB data stream",
   "main": "",
-  "scripts": {
-    "jsdocs": "jsdocs $npm_config_type/"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hoiast/Marvelmind.js.git"
