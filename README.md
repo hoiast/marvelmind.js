@@ -2,11 +2,11 @@
 
 **Javascript Library for Marvelmind GPS**
 
-Marlvelmind.js includes two small Javascript classes for receiving and parsing data from Marvelmind mobile beacon by USB/serial port.
+_**Marlvelmind.js**_ includes two small Javascript classes for receiving and parsing data from Marvelmind mobile beacon by USB/serial port.
 
-This code is divided in two sections - a **CLIENT** utility class and a **SERVER** utility class. Both classes parse data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00) and apply a similar approach to read incoming data, but differ significantly on how data is received and parsed.
+This code is divided in two sections - a **CLIENT** and a **SERVER** utility classes. Both classes parse data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00). They apply a similar approach to read incoming data, but differ significantly on how data is received and parsed.
 
-The client library is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). A custom parser is implemented.
+The client class is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). A custom parser is implemented.
 
 The server version of this code uses a serial port library, [serialport](https://www.npmjs.com/package/serialport), to acquire data stream and parse it with [parser-delimiter](https://serialport.io/docs/api-parser-delimiter).
 
@@ -14,7 +14,7 @@ Events are emitted using [EventEmitter](https://github.com/Olical/EventEmitter) 
 
 ## How to Test
 
-Please, ensure that all deploying instructions by Marvelmind have been thoroughly followed. Remember to update all SW Firmware, setup Beacon positioning, turn them ON and adjust Maps and Submaps and connect the USB Modem on your computer. It's mandatory to install the STM32 Driver to get data via USB.
+Please, ensure that all deploying instructions by Marvelmind have been thoroughly followed. Remember to update all SW Firmware, setup Beacon positioning, turn them ON and adjust Maps and Submaps and connect the USB Modem on your computer. It's mandatory to install the STM32 Driver to get modem data via USB.
 
 **Note:** Don't forget to ensure Marvelmind Dashboard is closed when testing this code - only one program (Node.js, your Browser or Marvelmind Dashboard) is allowed to receive data stream from the USB Modem at a specific port and time.
 
@@ -65,20 +65,21 @@ Both versions emit Events to transfer incoming data. Here follows a comprehensiv
     <script src="assets/js/EventEmitter.js"></script>
     <script src="marvelmind.js"></script>
     <script>
-        let marvelmind = new Marvelmind()
+        let marvelmind = new Marvelmind();
         marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
             console.log(hedgehogAddress, hedgehogCoordinates);
         });
+        marvelmind.toggleConnection(); //Requires user interaction first!
     </script>
 
 ```
 
 #### Attributes:
 
-> **baudRate** - baudrate. Should be match to baudrate of hedgehog-beacon
+> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon
 > _Default value: 9600_
 >
-> **debug** - debug flag which activate console output
+> **debug** - debug flag - Activates console output.
 > _Default value: False_
 
 #### Methods:
@@ -104,10 +105,10 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 > - '/dev/tty.usbmodem1451' - typical for Mac OS X
 > - 'COM3' to 'COM6' - typical for Windows
 >
-> **baudRate** - baudrate. Should be match to baudrate of hedgehog-beacon
+> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon
 > _Default value: 9600_
 >
-> **debug** - debug flag which activate console output
+> **debug** - debug flag - Activates console output.
 > _Default value: False_
 >
 > **paused** - pause flag. If True, class would not parse serial data
@@ -115,9 +116,9 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 
 #### Methods:
 
-> **toggleReading** - Toggle data parsing.
+> **toggleReading** - Toggle data reading.
 
-## _Credits_
+## _Acknowledgements_
 
 This repository is inspired by a former repository of [Joshua J. Damanik](https://github.com/joshuadamanik/) which implemented Marvelmind data processing on Node.js. Additionally, some opinionated choices have been inspired by [marvelmind.py](https://github.com/MarvelmindRobotics/marvelmind.py) for consistency.
 
