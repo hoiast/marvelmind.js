@@ -1,3 +1,9 @@
+/*
+ * marvelmind.js v0.0.1 - https://github.com/hoiast/marvelmind.js
+ * MIT License - https://choosealicense.com/licenses/mit/
+ * Murilo Hoias Teixeira - https://github.com/hoiast
+ */
+
 class Marvelmind extends EventEmitter {
   constructor({ baudRate = 9600, debug = false } = {}) {
     super();
@@ -91,12 +97,12 @@ class Marvelmind extends EventEmitter {
     temp = new Uint8Array(buffer.length + value.length);
     temp.set(buffer);
     temp.set(value, buffer.length);
-    let bufferFull = temp; //buffer is sum of all chunks
+    let bufferFull = temp; //bufferFull is the sum of previous buffer with incoming data chunk.
 
-    // . Try to split buffer looking for a delimiter (a pair of 255, 71) (0xff, 0x47)
+    // . Try to split the recently merged buffer looking for a delimiter pair of (255, 71) i.e. (0xff, 0x47).
     parsedMessagesStrings = bufferFull.toString().split('255,71,');
-    // . Gather all successfuly splitted chunks (all, but last one) and process them
-    // . . Ignore last message and return it to buffer
+    // . Gather all splitted messages (all, but last one) and process them.
+    // . . Ignore last message and return it to buffer. The last message may be incomplete.
     let bufferToReturn = new Uint8Array(parsedMessagesStrings.pop().split(','));
 
     // . Process parsed messages
@@ -105,7 +111,7 @@ class Marvelmind extends EventEmitter {
       this.readMessage(message);
     }
 
-    // . Return last buffer segment to merge with new incoming chunks
+    // . Return last buffer segment to merge with new incoming chunks.
     return bufferToReturn;
   }
 
@@ -218,7 +224,7 @@ class Marvelmind extends EventEmitter {
       distances.push({
         beaconAddress: data[0],
         beaconDistance: data[1],
-        isDistanceApplicable: data[2] % 2 === 0, //if number is odd(first bit equals 1), distance shouldn't be considered
+        isDistanceApplicable: data[2] % 2 === 0, //if number is odd (first bit equals 1), distance shouldn't be considered
       });
       offset += 6;
     }

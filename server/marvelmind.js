@@ -1,3 +1,9 @@
+/*
+ * marvelmind.js v0.0.1 - https://github.com/hoiast/marvelmind.js
+ * MIT License - https://choosealicense.com/licenses/mit/
+ * Murilo Hoias Teixeira - https://github.com/hoiast
+ */
+
 const { SerialPort } = require('serialport');
 const { DelimiterParser } = require('@serialport/parser-delimiter');
 const bufferpack = require('bufferpack');

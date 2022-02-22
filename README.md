@@ -50,15 +50,15 @@ Please, ensure that all deploying instructions by Marvelmind have been thoroughl
 
 Both classes emit Events to transfer incoming data. Here follows a comprehensive list:
 
-|   Event String    | Content                                         | Marvelmind Code |    Version   |
-| :---------------: | ----------------------------------------------- | :-------------: | :----------: |
-|   rawDistances    | Beacon Distances (mm)                           |   0x0004 (4)    |     Both     |
-|     telemetry     | Battery (mV) and RSSI (Dbm)                     |   0x0006 (6)    |     Both     |
-|      quality      | Quality Parameter (%) and Geofencing Zone Index |   0x0007 (7)    |     Both     |
-| hedgehogMilimeter | Hedgehog Coordinates (mm)                       |   0x0011 (17)   |     Both     |
-| beaconsMilimeter  | Beacons Coordinates (mm)                        |   0x0012 (18)   |     Both     |
-|     connected     | None                                            |   -----------   | Client Only  |
-|    disconnected   | None                                            |   -----------   | Client Only  |
+|   Event String    | Content                                         | Marvelmind Code |   Version   |
+| :---------------: | ----------------------------------------------- | :-------------: | :---------: |
+|   rawDistances    | Beacon Distances (mm)                           |   0x0004 (4)    |    Both     |
+|     telemetry     | Battery (mV) and RSSI (Dbm)                     |   0x0006 (6)    |    Both     |
+|      quality      | Quality Parameter (%) and Geofencing Zone Index |   0x0007 (7)    |    Both     |
+| hedgehogMilimeter | Hedgehog Coordinates (mm)                       |   0x0011 (17)   |    Both     |
+| beaconsMilimeter  | Beacons Coordinates (mm)                        |   0x0012 (18)   |    Both     |
+|     connected     | None                                            |   -----------   | Client Only |
+|   disconnected    | None                                            |   -----------   | Client Only |
 
 ### Client version
 
@@ -78,15 +78,19 @@ Both classes emit Events to transfer incoming data. Here follows a comprehensive
 
 #### Attributes:
 
-> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon
+> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon.
+>
 > _Default value: 9600_
 >
-> **debug** - debug flag - Activates console output.
+> **debug** - debug flag. Activates console output.
+>
 > _Default value: False_
 
 #### Methods:
 
-> **toggleConnection** - Toggle serial port connection. **Note:** Modern browser policy requires that users interact with the site before allowing a WebUSB connection. For example, on _/client/test.html_, a click event is used to ensure user interaction.
+> **toggleConnection( )** - Toggle serial port connection.
+>
+> **Note:** Modern browser policy requires that users interact with the site before allowing a WebUSB connection. For example, on _/client/test.html_, a click event is used to ensure user interaction.
 
 ### Server version
 
@@ -107,18 +111,21 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 > - '/dev/tty.usbmodem1451' - typical for Mac OS X
 > - 'COM3' to 'COM6' - typical for Windows
 >
-> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon
+> **baudRate** - baudrate. Should match baudrate of hedgehog-beacon.
+>
 > _Default value: 9600_
 >
-> **debug** - debug flag - Activates console output.
+> **debug** - debug flag. Activates console output.
+>
 > _Default value: False_
 >
-> **paused** - pause flag. If True, instance will not parse serial data when created. To start data parsing, use **toggleReading**.
+> **paused** - pause flag. If **true**, instance will not parse serial data when created. To start data parsing, use **toggleReading**.
+>
 > _Default value: False_
 
 #### Methods:
 
-> **toggleReading** - Toggle data reading.
+> **toggleReading( )** - Toggle data reading.
 
 ## _Acknowledgements_
 
