@@ -4,11 +4,11 @@
 
 _**Marlvelmind.js**_ includes two small Javascript classes for receiving and parsing data from Marvelmind mobile beacon by USB/serial port.
 
-This code contains a **CLIENT** and a **SERVER** utility classes. Both classes parse data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00). They apply a similar approach to read incoming data, but differ significantly on how data is received and parsed.
+This code contains a **CLIENT** and a **SERVER** utility classes. Both classes read data using [bufferpack](https://www.npmjs.com/package/bufferpack) and [Marvelmind Instructions](https://marvelmind.com/pics/marvelmind_interfaces.pdf) (v7.00). They apply a similar approach to read incoming data, but differ significantly on how data is received and parsed.
 
-The **client** class is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). Parsing incoming data chunks into readable message is performed by a custom parser.
+The **client** class is built upon [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/WebUSB_API), an experimental technology which, up to this date, is only supported by Chromium Based Browsers (Google Chrome, Edge, Opera, ...). On client, parsing incoming data chunks into readable message is performed by a custom parser.
 
-The **server** class of this code uses a serial port library, [serialport](https://www.npmjs.com/package/serialport), to acquire data stream. Parsing is conviniently done with [parser-delimiter](https://serialport.io/docs/api-parser-delimiter).
+The **server** class of this code uses a serial port library, [serialport](https://www.npmjs.com/package/serialport), to acquire data stream. On server, parsing is conviniently done with [parser-delimiter](https://serialport.io/docs/api-parser-delimiter).
 
 Events are emitted using [EventEmitter](https://github.com/Olical/EventEmitter) and [native Node.js Events API](https://nodejs.org/api/events.html) for client and server classes, respectively.
 
@@ -104,7 +104,7 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 
 #### Attributes:
 
-> **portAddress** - serial port device name (physical or USB/virtual). It should be provided as an argument:
+> **portAddress** - serial port device name (physical or USB/virtual). 
 > _Default value: 'COM3'_
 >
 > - '/dev/ttyACM0' - typical for Linux
@@ -119,7 +119,7 @@ marvelmind.on('hedgehogMilimeter', (hedgehogAddress, hedgehogCoordinates) => {
 >
 > _Default value: False_
 >
-> **paused** - pause flag. If **true**, instance will not parse serial data when created. To start data parsing, use **toggleReading**.
+> **paused** - pause flag. If **true**, instance will not read messages parsed from serial data when created. To start data reading, use **toggleReading**.
 >
 > _Default value: False_
 
